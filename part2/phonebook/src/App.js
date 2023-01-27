@@ -3,12 +3,15 @@ import personService from './services/persons'
 import { Filter } from './Filter'
 import { PersonForm } from './PersonForm'
 import { Persons } from './Persons'
+import { Notification } from './Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newPhone, setNewPhone] = useState('')
   const [newName, setNewName] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [message, setMessage] = useState(null)
+  const [type, setType] = useState('')
 
   useEffect(() => {
    personService.getAll()
@@ -33,6 +36,18 @@ const App = () => {
     setNewFilter(value)
   }
 
+  const setNotification = (message, notificationType) => {
+    setMessage(message)
+    setType(notificationType)
+  }
+
+  const resetNotification = () => {
+    setTimeout(() => {
+      setMessage(null)
+      setType('')
+    }, 5000)
+  }
+
   const onAddPerson = (event) => {
     event.preventDefault()
 
@@ -45,6 +60,8 @@ const App = () => {
       personService.create(person)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        setNotification(`Added ${person.name}`, 'success')
+        resetNotification()
       })
     } else {
       onUpdated({ ...person, id: personInTheList.id })
@@ -62,6 +79,12 @@ const App = () => {
     .then(deleteResponse => {
       const filterPerson = persons.filter(person => person.id !== id)
       setPersons(filterPerson)
+      setNotification(`Information of ${name} has already removed from server`, 'success')
+      resetNotification()
+    })
+    .catch(e => {
+      setNotification(`Information of ${name} has already been removed from server`, 'error')
+      resetNotification()
     })
   }
 
@@ -82,6 +105,12 @@ const App = () => {
         return person
       })
       setPersons(filterPerson)
+      setNotification(`Information of ${name} has been updated`, 'success')
+      resetNotification()
+    })
+    .catch(e => {
+      setNotification(`Information of ${name} has already been removed from server`, 'error')
+      resetNotification()
     })
   }
 
@@ -91,6 +120,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={type} />
       <Filter value={filter} onChange={onChangeFilter} />
 
       <h2>add a new</h2>
