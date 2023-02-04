@@ -63,6 +63,11 @@ const App = () => {
         setNotification(`Added ${person.name}`, 'success')
         resetNotification()
       })
+      .catch(e => {
+        const error = e.response.data.error
+        setNotification(error, 'error')
+        resetNotification()
+      })
     } else {
       onUpdated({ ...person, id: personInTheList.id })
     }
@@ -109,7 +114,9 @@ const App = () => {
       resetNotification()
     })
     .catch(e => {
-      setNotification(`Information of ${name} has already been removed from server`, 'error')
+      const error = e.response.data.error
+      // setNotification(`Information of ${name} has already been removed from server`, 'error')
+      setNotification(error, 'error')
       resetNotification()
     })
   }
