@@ -36,3 +36,50 @@ describe('total likes', () => {
   })
 
 })
+
+describe('favorite blog', () => {
+  const listWithOneBlog = [
+    {
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    }
+  ]
+  const listWithThreeBlogs = [
+    {
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    },
+    {
+      title: "It ends with us",
+      author: "Colleen Hoover",
+      likes: 1
+    },
+    {
+      title: 'It starts with us',
+      author: 'Colleen Hoover',
+      likes: 85
+    }
+  ]
+
+
+  test('when list has only one blog, return the same blog', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    expect(result).toEqual({
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    })
+  })
+
+  test('of a bigger list return the blog with more likes', () => {
+    const result = listHelper.favoriteBlog(listWithThreeBlogs)
+    expect(result).toEqual({
+      title: 'It starts with us',
+      author: 'Colleen Hoover',
+      likes: 85
+    })
+  })
+
+})
