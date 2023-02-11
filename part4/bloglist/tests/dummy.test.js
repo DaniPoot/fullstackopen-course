@@ -130,3 +130,37 @@ describe('most blogs', () => {
   })
 
 })
+
+describe('most likes', () => {
+  const listWithOneBlog = [
+    {
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    }
+  ]
+  const listWithThreeBlogs = [
+    {
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    },
+    {
+      author: 'Colleen Hoover',
+      likes: 85
+    },
+    {
+      author: "Colleen Hoover",
+      likes: 1
+    }
+  ]
+
+
+  test('when list has only one blog, return the name author of that blog', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    expect(result).toEqual("Edsger W. Dijkstra")
+  })
+
+  test('of a bigger list return the blog with more likes', () => {
+    const result = listHelper.mostLikes(listWithThreeBlogs)
+    expect(result).toEqual('Colleen Hoover')
+  })
+})
