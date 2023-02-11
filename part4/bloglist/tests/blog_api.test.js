@@ -75,6 +75,23 @@ test('a new blog was created without likes and return likes with zero', async ()
   expect(blogsCreated.likes).toBe(0)
 })
 
+test('a new blog wasn\'t created if title and url are missing', async () => {
+  const newBlog = {
+    author: 'James Clear',
+    url: 'https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299/ref=zg_bs_books_sccl_4/144-4337226-9928343',
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+  newBlog.title = "Atomic Habits"
+  newBlog.url = undefined
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

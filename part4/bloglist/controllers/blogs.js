@@ -7,6 +7,11 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
+  const { title, url } = request.body
+  if (!title || !url) {
+    response.status(400).end()
+    return
+  }
   const blog = new Blog(request.body)
   await blog.save()
 
