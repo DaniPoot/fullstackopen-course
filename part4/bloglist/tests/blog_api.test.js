@@ -54,6 +54,27 @@ test('a new blog was created', async () => {
   )
 })
 
+test('a new blog was created without likes and return likes with zero', async () => {
+  const newBlog = {
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    url: 'https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299/ref=zg_bs_books_sccl_4/144-4337226-9928343',
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const blogs = response.body
+  const blogsCreated = blogs.find(blog => blog.title === newBlog.title) 
+
+  expect(newBlog.likes).not.toBeDefined()
+  expect(blogsCreated.likes).toBeDefined()
+  expect(blogsCreated.likes).toBe(0)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
