@@ -1,3 +1,5 @@
+const Blog = require("../models/blog")
+
 const initialBlogs = [
   {
     title: "Canonical string reduction",
@@ -19,6 +21,26 @@ const initialBlogs = [
   }
 ]
 
+const nonExistingId = async () => {
+  const blog = new Blog({
+    title: 'Title',
+    author: 'author',
+    likes: 85,
+    url: 'fake url'
+  })
+  await blog.save()
+  await blog.remove()
+
+  return blog.id.toString()
+}
+
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  nonExistingId,
+  blogsInDb
 }

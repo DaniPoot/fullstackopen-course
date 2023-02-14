@@ -9,11 +9,7 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  const blogObjects = helper.initialBlogs
-    .map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  await Blog.insertMany(helper.initialBlogs)
 })
 
 test('blogs are returned as json', async () => {
@@ -90,6 +86,22 @@ test('a new blog wasn\'t created if title and url are missing', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+})
+
+test('deletion of a blog', async () => {
+  const blogs = await helper.blogsInDb()
+  const blog = blogs[1]
+
+  await api
+    .delete(`/api/blogs/${blog.id}`)
+    .expect(201)
+})
+
+test('fails with statuscode 404 if note does not exist', async () => {
+  const validNonexistingId = await helper.nonExistingId()
+  await api
+    .get(`/api/blogs/${validNonexistingId}`)
+    .expect(404)
 })
 
 afterAll(async () => {
