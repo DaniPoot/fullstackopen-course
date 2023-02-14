@@ -97,10 +97,31 @@ test('deletion of a blog', async () => {
     .expect(201)
 })
 
-test('fails with statuscode 404 if note does not exist', async () => {
+test('fails with statuscode 404 if blog does not exist', async () => {
   const validNonexistingId = await helper.nonExistingId()
   await api
     .get(`/api/blogs/${validNonexistingId}`)
+    .expect(404)
+})
+
+test('updated of a blog', async () => {
+  const blogs = await helper.blogsInDb()
+  const existingBlog = blogs[1]
+  const response = await api
+    .put(`/api/blogs/${existingBlog.id}`,)
+    .send({ likes: 500 })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  const blog = response.body
+  expect(blog.likes).toBe(500)
+})
+
+test('fails with statuscode 404 if blog does not exist to updated', async () => {
+  const validNonexistingId = await helper.nonExistingId()
+  console.log({ validNonexistingId })
+  const respoonse = await api
+    .put(`/api/blogs/${validNonexistingId}`)
+    .send({ like: 400 })
     .expect(404)
 })
 
