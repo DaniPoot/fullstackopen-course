@@ -32,10 +32,15 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const { id } = request.params
+  const { userid } = request
   if (!id) {
     return response.status(400).end()
   }
-  await Blog.findByIdAndDelete(id)
+  const blog = await Blog.findById(id)
+  if ( blog.user.toString() !== userid.toString() ) {
+    return response.status(400).json({ error: 'User can\'t deleted blogs created by other users' }).end()
+  }
+  await blog.delete()
   response.status(201).end()
 })
 
